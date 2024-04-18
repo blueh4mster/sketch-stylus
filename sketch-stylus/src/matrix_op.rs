@@ -7,10 +7,21 @@ sol_storage! {
 }
 
 impl MatrixOp {
-    pub fn transpose(ori: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    pub fn elementwise_mul(m1: Vec<Vec<i128>>, m2: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
+        assert_eq!(m1.len(), m2.len(), "Number of rows not equal");
+        assert_eq!(m1[0].len(), m2[0].len(), "Number of rows not equal");
+        let mut result: Vec<Vec<i128>> = Vec::new();
+        for i in 0..m1.len() {
+            for j in 0..m1[0].len() {
+                result[i][j] = m1[i][j] * m2[i][j];
+            }
+        }
+        result
+    }
+    pub fn transpose(ori: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         let m = ori.len();
         let n = ori[0].len();
-        let mut trans: Vec<Vec<f64>> = Vec::new();
+        let mut trans: Vec<Vec<i128>> = Vec::new();
 
         for i in 0..m {
             for j in 0..n {
@@ -21,35 +32,35 @@ impl MatrixOp {
         trans
     }
 
-    pub fn softmax(z: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
-        let mut v: Vec<Vec<f64>> = Vec::new();
+    pub fn softmax(z: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
+        let mut v: Vec<Vec<i128>> = Vec::new();
         let mut sum: f32 = 0.0;
         for i in 0..z.len() {
             sum += exp(z[i][0] as f32);
         }
         for i in 0..z.len() {
-            v[i][0] = (exp(z[i][0] as f32) / sum) as f64;
+            v[i][0] = (exp(z[i][0] as f32) / sum) as i128;
         }
         v
     }
 
-    pub fn relu(z: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    pub fn relu(z: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         let len = z.len();
         let len2 = z[0].len();
-        let mut v: Vec<Vec<f64>> = Vec::new();
+        let mut v: Vec<Vec<i128>> = Vec::new();
         for i in 0..len {
             for j in 0..len2 {
-                if z[i][j] > 0.0 {
+                if z[i][j] > 0 {
                     v[i][j] = z[i][j];
                 } else {
-                    v[i][j] = 0.0;
+                    v[i][j] = 0;
                 }
             }
         }
         v
     }
 
-    pub fn dot_product(m1: &Vec<Vec<f64>>, m2: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    pub fn dot_product(m1: Vec<Vec<i128>>, m2: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         assert_eq!(
             m1[0].len(),
             m2.len(),
@@ -58,7 +69,7 @@ impl MatrixOp {
         let m = m1.len();
         let n = m2.len();
         let p = m2[0].len();
-        let mut result = vec![vec![0.0; p]; m];
+        let mut result = vec![vec![0; p]; m];
 
         for i in 0..m {
             for j in 0..p {
@@ -70,11 +81,11 @@ impl MatrixOp {
 
         result
     }
-    pub fn sum(m1: &Vec<Vec<f64>>, m2: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    pub fn sum(m1: Vec<Vec<i128>>, m2: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         assert_eq!(m1.len(), m2.len(), "Number of rows donot match");
         let n = m1.len();
         let m = m1[0].len();
-        let mut result = vec![vec![0.0; m]; n];
+        let mut result = vec![vec![0; m]; n];
         for i in 0..n {
             for k in 0..m {
                 result[i][k] = m1[i][k] + m2[k][0];
@@ -83,7 +94,7 @@ impl MatrixOp {
         result
     }
 
-    pub fn one_hot(y: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    pub fn one_hot(y: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         let m = y.len();
         let n = y[0].len();
         let size = m * n;
@@ -96,18 +107,18 @@ impl MatrixOp {
             }
         }
 
-        max_val += 1.0;
+        max_val += 1;
         let final_val = max_val as usize;
-        let mut one_hot_y = vec![vec![0.0; final_val]; size]; // np.zeroes--done
+        let mut one_hot_y = vec![vec![0; final_val]; size]; // np.zeroes--done
         for row in 0..m {
             let col = y[row][0] as usize;
-            one_hot_y[row][col] = 1.0;
+            one_hot_y[row][col] = 1;
         }
         one_hot_y
     }
 
-    pub fn scalar_mul(mat: &Vec<Vec<f64>>, scalar: f64) -> Vec<Vec<f64>> {
-        let mut result: Vec<Vec<f64>> = Vec::new();
+    pub fn scalar_mul(mat: Vec<Vec<i128>>, scalar: i128) -> Vec<Vec<i128>> {
+        let mut result: Vec<Vec<i128>> = Vec::new();
         let m = mat.len();
         let n = mat[0].len();
         for i in 0..m {

@@ -1,8 +1,6 @@
 use crate::constants::{ConstantParams, Constants};
 use crate::nn::NN;
-use std::error::Error;
 use alloy_sol_types::sol;
-use stylus_sdk::evm;
 use stylus_sdk::prelude::*;
 
 sol_storage! {
@@ -11,7 +9,7 @@ sol_storage! {
     }
 }
 
-sol!{
+sol! {
     event prediction_tested(uint128 prediction, uint128 label);
 }
 
