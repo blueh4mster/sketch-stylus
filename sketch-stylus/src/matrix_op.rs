@@ -7,6 +7,43 @@ sol_storage! {
 }
 
 impl MatrixOp {
+    pub fn relu_derive(m: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
+        let mut result: Vec<Vec<i128>> = Vec::new();
+        for i in 0..m.len() {
+            for j in 0..m[0].len() {
+                match m[i][j] > 0 {
+                    true => result[i][j] = 1,
+                    false => result[i][j] = 0,
+                }
+            }
+        }
+        result
+    }
+
+    pub fn element_sum_row(z: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
+        let mut sum = 0;
+        let mut result: Vec<Vec<i128>> = Vec::new();
+        for i in 0..z.len() {
+            for j in 0..z[0].len() {
+                sum += z[i][j];
+            }
+            result[i][0] = sum;
+            sum = 0;
+        }
+        result
+    }
+
+    pub fn scalar_div(mat: Vec<Vec<i128>>, scalar: i128) -> Vec<Vec<i128>> {
+        let mut result: Vec<Vec<i128>> = Vec::new();
+        let m = mat.len();
+        let n = mat[0].len();
+        for i in 0..m {
+            for j in 0..n {
+                result[i][j] = mat[i][j] / scalar;
+            }
+        }
+        result
+    }
     pub fn elementwise_mul(m1: Vec<Vec<i128>>, m2: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         assert_eq!(m1.len(), m2.len(), "Number of rows not equal");
         assert_eq!(m1[0].len(), m2[0].len(), "Number of rows not equal");

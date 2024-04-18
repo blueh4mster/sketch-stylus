@@ -114,7 +114,7 @@ impl NN {
     ) {
         let m = (y.len() * y[0].len()) as i128;
         let one_hot_y = MatrixOp::one_hot(y);
-        let dz2 = MatrixOp::sum(a2, MatrixOp::scalar_mul(one_hot_y, -1.0));
+        let dz2 = MatrixOp::sum(a2, MatrixOp::scalar_mul(one_hot_y, -1));
         let dw2 = MatrixOp::scalar_div(MatrixOp::dot_product(z2, MatrixOp::transpose(a1)), m);
         let dz2_clone = dz2.clone();
         let db2 = MatrixOp::scalar_div(MatrixOp::element_sum_row(dz2), m);
