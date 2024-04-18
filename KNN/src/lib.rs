@@ -24,31 +24,49 @@
 // Allow `cargo stylus export-abi` to generate a main function.
 #![cfg_attr(not(feature = "export-abi"), no_main)]
 extern crate alloc;
-use fast_math::exp;
+
 /// Use an efficient WASM allocator.
 #[global_allocator]
 static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
 /// Import items from the SDK. The prelude contains common traits and macros.
-use stylus_sdk::prelude::*;
+use stylus_sdk::{alloy_primitives::U256, prelude::*};
 
 // Define some persistent storage using the Solidity ABI.
 // `Counter` will be the entrypoint.
 sol_storage! {
     #[entrypoint]
-    pub struct MlMath{
+    pub struct KNN{
+        uint256 k;
+    }
+}
+
+/// Declare that `Counter` is a contract with the following external methods.
+
+impl KNN {
+    pub fn euclidean_distance(x1: Vec<i128>, x2: Vec<i128>) -> i128 {
+        // distance = np.sqrt(np.sum((x1-x2)**2))
+        assert_eq!(x1.len() == x2.len(), "error");
+        let mut sum = 0;
+        for i in 0..x1.len() {
+            let mut val = x1[i] - x2[i];
+            sum += (val * val);
+        }
+        return sqrt(sum);
+    }
+    pub fn sqrt(num: i128) -> i128 {
+        // take from the azmath
+        0
     }
 }
 
 #[external]
-impl MlMath {
-    // returns scaled sigmoid values by 10^^8
-    pub fn sigmoid(z: i128) -> i128 {
-        let mut ans = exp(z as f32) / (1.0 + exp(z as f32));
-        ans *= 100000000.0;
-        return ans as i128;
+impl KNN {
+    pub fn train_predict(&mut self) {}
+    pub fn set_k(&mut self, val: U256) {
+        self.k.set(val);
     }
-    // good implementation requies fft , already coded so dunno what to do
-    pub fn conv_1d() {}
-    pub fn conv_2d() {}
+    pub fn get_k(&self) -> U256 {
+        self.k
+    }
 }
