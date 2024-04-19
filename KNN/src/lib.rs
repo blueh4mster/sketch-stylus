@@ -44,7 +44,7 @@ sol_storage! {
 /// Declare that `Counter` is a contract with the following external methods.
 
 impl KNN {
-    pub fn euclidean_distance(x1: Vec<i128>, x2: Vec<i128>) -> i128 {
+    pub fn euclidean_distance(&self, x1: Vec<i128>, x2: Vec<i128>) -> i128 {
         // distance = np.sqrt(np.sum((x1-x2)**2))
         assert_eq!(x1.len(), x2.len(), "length of arrays not same");
         let mut sum = 0.0;
