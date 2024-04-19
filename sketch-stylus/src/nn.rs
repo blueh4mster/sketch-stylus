@@ -15,6 +15,7 @@ impl NN {
         Vec<Vec<i128>>,
         Vec<Vec<i128>>,
     ) {
+        // all are scaled by 1000
         let w1: Vec<Vec<i128>> = vec![vec![8; 784]; 10];
         let b1: Vec<Vec<i128>> = vec![vec![1; 1]; 10];
         let w2: Vec<Vec<i128>> = vec![vec![2; 10]; 10];

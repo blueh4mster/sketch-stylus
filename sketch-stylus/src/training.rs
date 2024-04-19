@@ -36,7 +36,7 @@ impl Training {
             // make clones to pass in functions
             let (w1_clone, w2_clone, b1_clone, b2_clone) =
                 (w1.clone(), w2.clone(), b1.clone(), b2.clone());
-            let (w1_clone_clone, w2_clone_clone) = (w2.clone(), w1.clone());
+            let (w1_clone_clone, w2_clone_clone) = (w1.clone(), w2.clone());
 
             // call the functions
             let (z1, a1, z2, a2) =
@@ -70,7 +70,7 @@ impl Training {
         w2: Vec<Vec<i128>>,
         b2: Vec<Vec<i128>>,
     ) -> Vec<Vec<i128>> {
-        let (_, _, _, a2) = NN::forward_prop(w1, b1, w2, b2, x);
+        let (_, _, _, a2) = NN::forward_prop(w1, b1, w2, b2, x); //x is scaled by 1000
         let predictions = NN::get_predictions(a2);
         predictions
     }
@@ -83,14 +83,14 @@ impl Training {
         w2: Vec<Vec<i128>>,
         b2: Vec<Vec<i128>>,
     ) {
-        let (x_train, y_train) = Constants::training_data();
+        let (x_train, y_train) = Constants::training_data(); // get scaled them by 1000
         let mut current_img: Vec<Vec<i128>> = Vec::new();
         let size = x_train.len();
         for i in 0..size {
             current_img[i][0] = x_train[i][index as usize];
         }
-        let prediction = self.make_predictions(current_img, w1, b1, w2, b2);
-        let label = y_train[0][index as usize];
+        let prediction = self.make_predictions(current_img, w1, b1, w2, b2); //current_img is scalled by 1000
+        let label = y_train[0][index as usize] / 1000; // y_train is scaled by 1000
         let p = prediction[0][0] as u128;
         let l = label as u128;
 
