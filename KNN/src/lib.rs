@@ -57,6 +57,25 @@ impl KNN {
         ans *= 1000.0; // scaled 10**3 times
         return ans as i128;
     }
+    pub fn distances_sort(&self, distances:Vec<i128>,y_train:Vec<i128>,k:u128) -> Vec<i128> {
+        let mut tmp : Vec<(usize,i128)> = Vec::new();
+        let dist_len = distances.len();
+        for x in 0..dist_len{
+            tmp[x].0 = x;
+            tmp[x].1 = distances[x];
+        }
+        let ki  = k as usize;
+        tmp.sort_by(|a,b| a.1.cmp(&b.1));
+        let mut k_indices : Vec<usize> = Vec::new();
+        for y in 0..ki{
+            k_indices[y] = tmp[y].0;
+        }
+        let mut k_nearest_labels : Vec<i128> = Vec::new();
+        for z in 0..ki{
+            k_nearest_labels[z] = y_train[k_indices[z]];
+        }
+        k_nearest_labels
+    }
 }
 
 #[external]
@@ -68,4 +87,5 @@ impl KNN {
     pub fn get_k(&self) -> U256 {
         self.k.get()
     }
+
 }
