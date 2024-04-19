@@ -57,6 +57,13 @@ impl KNN {
         ans *= 1000.0; // scaled 10**3 times
         return ans as i128;
     }
+    pub fn arr_sort(&self, mut arr:Vec<i128>,k:u128) -> Vec<i128> {
+        arr.sort();
+        let ki  = k as usize;
+        let ret = arr.as_mut_slice();
+        let finalarr=&ret[0..ki ];
+        finalarr.to_vec()
+    }
 }
 
 #[external]
@@ -68,4 +75,5 @@ impl KNN {
     pub fn get_k(&self) -> U256 {
         self.k.get()
     }
+
 }
