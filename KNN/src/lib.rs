@@ -31,7 +31,7 @@ static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
 /// Import items from the SDK. The prelude contains common traits and macros.
 use stylus_sdk::{alloy_primitives::U256, prelude::*};
-
+use sqrt-rs::{babylonian_sqrt};
 // Define some persistent storage using the Solidity ABI.
 // `Counter` will be the entrypoint.
 sol_storage! {
@@ -47,16 +47,13 @@ impl KNN {
     pub fn euclidean_distance(x1: Vec<i128>, x2: Vec<i128>) -> i128 {
         // distance = np.sqrt(np.sum((x1-x2)**2))
         assert_eq!(x1.len() == x2.len(), "error");
-        let mut sum = 0;
+        let mut sum = 0.0;
         for i in 0..x1.len() {
             let mut val = x1[i] - x2[i];
             sum += (val * val);
         }
-        return sqrt(sum);
-    }
-    pub fn sqrt(num: i128) -> i128 {
-        // take from the azmath
-        0
+        //scale it in here
+        return babylonian_sqrt(sum);
     }
 }
 
