@@ -42,8 +42,8 @@ impl ConstantParams for Constants {
         // }
         // let y_train = vec!vec![y_temp];
 
-        // let x_train = vec!vec![vec!vec![0; 784]; 41000];
-        // let y_train = vec!vec![vec!vec![0; 785]; 1];
+        // let x_train = vec![vec![0; 784]; 41000];
+        // let y_train = vec![vec![0; 785]; 1];
         let y_train = vec![vec![
             5000, 5000, 9000, 1000, 2000, 7000, 3000, 2000, 7000, 4000,
         ]];
