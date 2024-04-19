@@ -29,9 +29,9 @@ extern crate alloc;
 #[global_allocator]
 static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
+use sqrt_rs::babylonian_sqrt;
 /// Import items from the SDK. The prelude contains common traits and macros.
 use stylus_sdk::{alloy_primitives::U256, prelude::*};
-use sqrt-rs::{babylonian_sqrt};
 // Define some persistent storage using the Solidity ABI.
 // `Counter` will be the entrypoint.
 sol_storage! {
@@ -46,14 +46,16 @@ sol_storage! {
 impl KNN {
     pub fn euclidean_distance(x1: Vec<i128>, x2: Vec<i128>) -> i128 {
         // distance = np.sqrt(np.sum((x1-x2)**2))
-        assert_eq!(x1.len() == x2.len(), "error");
+        assert_eq!(x1.len(), x2.len(), "length of arrays not same");
         let mut sum = 0.0;
         for i in 0..x1.len() {
-            let mut val = x1[i] - x2[i];
-            sum += (val * val);
+            let val = (x1[i] - x2[i]) as f32;
+            sum += val * val;
         }
         //scale it in here
-        return babylonian_sqrt(sum);
+        let mut ans = babylonian_sqrt(sum);
+        ans *= 1000.0; // scaled 10**3 times
+        return ans as i128;
     }
 }
 
@@ -64,6 +66,6 @@ impl KNN {
         self.k.set(val);
     }
     pub fn get_k(&self) -> U256 {
-        self.k
+        self.k.get()
     }
 }
