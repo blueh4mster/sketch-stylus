@@ -2,13 +2,14 @@ use csv::Reader;
 use std::fs::File;
 
 pub trait ConstantParams {
-    fn training_data() -> (Vec<Vec<f64>>, Vec<Vec<f64>>);
+    fn training_data() -> (Vec<Vec<i128>>, Vec<Vec<i128>>);
 }
 
+// say u scale everyting by 1000
 pub struct Constants;
 
 impl ConstantParams for Constants {
-    fn training_data() -> (Vec<Vec<f64>>, Vec<Vec<f64>>) {
+    fn training_data() -> (Vec<Vec<i128>>, Vec<Vec<i128>>) {
         let file_path = "./../csv/train.csv";
         let file = File::open(file_path).unwrap();
         let mut rdr = Reader::from_reader(file);
@@ -29,12 +30,18 @@ impl ConstantParams for Constants {
         for record in records {
             let mut x = Vec::new();
             for i in 1..n {
-                let value: f64 = record[i].parse().unwrap();
-                x.push(value / 255.0); // Assuming normalization by 255 as in your Python code
+                let mut value: f32 = record[i].parse().unwrap();
+                //changing here
+                value /= 255.0;
+                value *= 1000.0;
+
+                x.push(value as i128); // Assuming normalization by 255 as in your Python code
             }
             x_train.push(x);
-            let y: f64 = record[0].parse().unwrap();
-            y_temp.push(y);
+            let mut y: f32 = record[0].parse().unwrap();
+            // changing the scale
+            y *= 1000.0;
+            y_temp.push(y as i128);
         }
         let y_train = vec![y_temp];
 

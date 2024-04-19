@@ -89,11 +89,11 @@ impl NN {
         let inter1 = MatrixOp::dot_product(w1, x);
         let z1 = MatrixOp::sum(inter1, b1);
         let z1_clone = z1.clone();
-        let a1 = MatrixOp::relu(z1);
-        let inter2 = MatrixOp::dot_product(w2, x);
+        let a1 = MatrixOp::relu(z1_clone);
+        let inter2 = MatrixOp::dot_product(w2, x_clone);
         let z2 = MatrixOp::sum(inter2, b2);
         let z2_clone = z2.clone();
-        let a2 = MatrixOp::softmax(z2);
+        let a2 = MatrixOp::softmax(z2_clone);
         return (z1, a1, z2, a2);
     }
 
@@ -102,7 +102,7 @@ impl NN {
         a1: Vec<Vec<i128>>,
         z2: Vec<Vec<i128>>,
         a2: Vec<Vec<i128>>,
-        w1: Vec<Vec<i128>>,
+        _w1: Vec<Vec<i128>>,
         w2: Vec<Vec<i128>>,
         x: Vec<Vec<i128>>,
         y: Vec<Vec<i128>>,
@@ -117,14 +117,14 @@ impl NN {
         let dz2 = MatrixOp::sum(a2, MatrixOp::scalar_mul(one_hot_y, -1));
         let dw2 = MatrixOp::scalar_div(MatrixOp::dot_product(z2, MatrixOp::transpose(a1)), m);
         let dz2_clone = dz2.clone();
-        let db2 = MatrixOp::scalar_div(MatrixOp::element_sum_row(dz2), m);
+        let db2 = MatrixOp::scalar_div(MatrixOp::element_sum_row(dz2_clone), m);
 
         let dz1 = MatrixOp::elementwise_mul(
             MatrixOp::dot_product(MatrixOp::transpose(w2), dz2),
             MatrixOp::relu_derive(z1),
         );
         let dz1_clone = dz1.clone();
-        let dw1 = MatrixOp::scalar_div(MatrixOp::dot_product(dz1, MatrixOp::transpose(x)), m);
+        let dw1 = MatrixOp::scalar_div(MatrixOp::dot_product(dz1_clone, MatrixOp::transpose(x)), m);
         let db1 = MatrixOp::scalar_div(MatrixOp::element_sum_row(dz1), m);
         (dw1, db1, dw2, db2)
     }
