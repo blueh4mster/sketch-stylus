@@ -30,6 +30,7 @@ extern crate alloc;
 static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
 use sqrt_rs::babylonian_sqrt;
+use std::collections::HashMap;
 /// Import items from the SDK. The prelude contains common traits and macros.
 use stylus_sdk::{alloy_primitives::U256, prelude::*};
 // Define some persistent storage using the Solidity ABI.
@@ -57,7 +58,7 @@ impl KNN {
         ans *= 1000.0; // scaled 10**3 times
         return ans as i128;
     }
-    pub fn distances_sort(&self, distances:Vec<i128>,y_train:Vec<i128>,k:u128) -> Vec<i128> {
+    pub fn most_common(&self, distances:Vec<i128>,y_train:Vec<i128>,k:u128) -> i128 {
         let mut tmp : Vec<(usize,i128)> = Vec::new();
         let dist_len = distances.len();
         for x in 0..dist_len{
@@ -74,7 +75,22 @@ impl KNN {
         for z in 0..ki{
             k_nearest_labels[z] = y_train[k_indices[z]];
         }
-        k_nearest_labels
+        let mut freq_vec: HashMap<i128, u128> = HashMap::new();
+
+        for i in &k_nearest_labels {
+            let freq: &mut u128 = freq_vec.entry(*i).or_insert(0);
+            *freq += 1;
+        }
+        let mut start = k_nearest_labels[0];
+        let mut maximum_freq = freq_vec[&start];
+        for i in 0..ki{
+            let i_tmp = k_nearest_labels[i];
+            if freq_vec[&i_tmp] > maximum_freq {
+                maximum_freq = freq_vec[&i_tmp];
+                start = i_tmp;
+            }
+        }
+        start
     }
 }
 
