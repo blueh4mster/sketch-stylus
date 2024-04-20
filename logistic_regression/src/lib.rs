@@ -29,41 +29,49 @@ extern crate alloc;
 #[global_allocator]
 static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
+use fast_math::exp;
 /// Import items from the SDK. The prelude contains common traits and macros.
 use stylus_sdk::{alloy_primitives::U256, prelude::*};
-
 // Define some persistent storage using the Solidity ABI.
 // `Counter` will be the entrypoint.
 sol_storage! {
     #[entrypoint]
     pub struct LogReg{
-        int[] w;// weights
-        int[] b;// biases
+        int[][] w;// weights
+        int[][] b;// biases
     }
 }
 
 impl LogReg {
-    pub fn change_type(&self) -> (Vec<i128>, Vec<i128>) {
-        // initiate new w1,b1,w2,b2 as data types don't match and there is no clone function on storage vec
-        let mut w: Vec<i128> = Vec::new();
-        let mut b: Vec<i128> = Vec::new();
+    pub fn change_type(&self) -> (Vec<Vec<i128>>, Vec<Vec<i128>>) {
+        // initiate new w,b as data types don't match and there is no clone function on storage vec
+        let mut w: Vec<Vec<i128>> = Vec::new();
+        let mut b: Vec<Vec<i128>> = Vec::new();
+
+        //convert them to i128 and then pass their clones
 
         //convert them to i128 and then pass their clones
         //set w
         let m = self.w.len();
+        let n = self.w.get(0).unwrap().len();
         for i in 0..m {
-            w[i] = self.w.get(i).unwrap().try_into().unwrap();
+            for j in 0..n {
+                w[i][j] = self.w.get(i).unwrap().get(j).unwrap().try_into().unwrap();
+            }
         }
 
-        //set b
+        //set w1
         let m = self.b.len();
+        let n = self.b.get(0).unwrap().len();
         for i in 0..m {
-            b[i] = self.b.get(i).unwrap().try_into().unwrap();
+            for j in 0..n {
+                b[i][j] = self.b.get(i).unwrap().get(j).unwrap().try_into().unwrap();
+            }
         }
         (w, b)
     }
 
-    pub fn dot_product(m1: Vec<Vec<i128>>, m2: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
+    pub fn dot_product(&self, m1: Vec<Vec<i128>>, m2: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         //say we have scaled vectors as inputs and scale=1000
         assert_eq!(
             m1[0].len(),
@@ -114,6 +122,7 @@ impl LogReg {
         }
         result
     }
+
     pub fn element_sum_row(&self, z: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         let mut sum = 0;
         let mut result: Vec<Vec<i128>> = Vec::new();
@@ -133,29 +142,43 @@ impl LogReg {
         return ans as i128;
     }
 
-    pub fn set_vars(&mut self, w: Vec<i128>, b: Vec<i128>) {
-        //set w1
+    pub fn sigmoid_mat(&self, z: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
+        let mut result: Vec<Vec<i128>> = Vec::new();
+        for i in 0..z.len() {
+            for j in 0..z[0].len() {
+                result[i][j] = self.sigmoid(z[i][j]);
+            }
+        }
+        result
+    }
+
+    pub fn set_vars(&mut self, w: Vec<Vec<i128>>, b: Vec<Vec<i128>>) {
+        //set w and all.
         let m = self.w.len();
+        let n = self.w.get(0).unwrap().len();
         for i in 0..m {
-            let mut z = self.w.get_mut(i).unwrap();
-            let mut p = z.setter(i).unwrap();
-            p.set(w[i].try_into().unwrap());
+            for j in 0..n {
+                let mut z = self.w.get_mut(i).unwrap();
+                let mut p = z.setter(j).unwrap();
+                p.set(w[i][j].try_into().unwrap());
+            }
         }
         //set b
         let m = self.b.len();
+        let n = self.b.get(0).unwrap().len();
         for i in 0..m {
-            let mut z = self.b.get_mut(i).unwrap();
-            let mut p = z.setter(i).unwrap();
-            p.set(b[i].try_into().unwrap());
+            for j in 0..n {
+                let mut z = self.b.get_mut(i).unwrap();
+                let mut p = z.setter(j).unwrap();
+                p.set(b[i][j].try_into().unwrap());
+            }
         }
     }
 }
 #[external]
 impl LogReg {
     pub fn train(&mut self, x_train: Vec<Vec<i128>>, y_train: Vec<Vec<i128>>, iterations: u128) {
-        // init  w, b=0;
-        // update their state
-
+        // w-> n*1, b-> m*1, x_train-> m*n, y_train->m*1
         // n_samples, n_features = X.shape
         let n_samples = x_train.len();
         let n_features = x_train[0].len();
@@ -163,8 +186,16 @@ impl LogReg {
         // self.weights = np.zeros(n_features)
         // self.bias = 0
         for _ in 0..iterations {
+            let x_train_clone = x_train.clone();
+            let x_train_clone_clone = x_train_clone.clone();
+            let x_train_trans = self.transpose(x_train_clone_clone);
             let (w, b) = self.change_type();
-            self.sum(self.dot_product(x_train, w), b)
+            let linear_predictions = self.sum(self.dot_product(x_train_clone, w), b);
+
+            let predictions = self.sigmoid_mat(linear_predictions);
+
+
+            // let dw=self.scalar_div()
         }
         // for _ in range(self.n_iters):
         //     linear_pred = np.dot(X, self.weights) + self.bias
