@@ -1,4 +1,5 @@
 # SKETCH-STYLUS
+![alt text](public/Untitled-5_page-0001.jpg)
 
 ## Introduction
 
