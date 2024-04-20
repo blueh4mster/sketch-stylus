@@ -1,4 +1,4 @@
-# SKECTH-STYLUS
+# SKETCH-STYLUS
 
 ## Introduction
 
