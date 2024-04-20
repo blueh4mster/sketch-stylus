@@ -152,6 +152,30 @@ impl LogReg {
         result
     }
 
+    pub fn scalar_div(&self, mat: Vec<Vec<i128>>, scalar: i128) -> Vec<Vec<i128>> {
+        let mut result: Vec<Vec<i128>> = Vec::new();
+        let m = mat.len();
+        let n = mat[0].len();
+        for i in 0..m {
+            for j in 0..n {
+                result[i][j] = mat[i][j] / scalar;
+            }
+        }
+        result
+    }
+
+    pub fn scalar_mul(&self, mat: Vec<Vec<i128>>, scalar: i128) -> Vec<Vec<i128>> {
+        let mut result: Vec<Vec<i128>> = Vec::new();
+        let m = mat.len();
+        let n = mat[0].len();
+        for i in 0..m {
+            for j in 0..n {
+                result[i][j] = mat[i][j] * scalar;
+            }
+        }
+        result
+    }
+
     pub fn set_vars(&mut self, w: Vec<Vec<i128>>, b: Vec<Vec<i128>>) {
         //set w and all.
         let m = self.w.len();
@@ -180,7 +204,7 @@ impl LogReg {
     pub fn train(&mut self, x_train: Vec<Vec<i128>>, y_train: Vec<Vec<i128>>, iterations: u128) {
         // w-> n*1, b-> m*1, x_train-> m*n, y_train->m*1
         // n_samples, n_features = X.shape
-        let n_samples = x_train.len();
+        let n_samples = x_train.len() as i128;
         let n_features = x_train[0].len();
 
         // self.weights = np.zeros(n_features)
@@ -189,13 +213,25 @@ impl LogReg {
             let x_train_clone = x_train.clone();
             let x_train_clone_clone = x_train_clone.clone();
             let x_train_trans = self.transpose(x_train_clone_clone);
+            let y_train_clone = y_train.clone();
+
             let (w, b) = self.change_type();
+            let (w_clone, b_clone) = (w.clone(), b_clone());
+
             let linear_predictions = self.sum(self.dot_product(x_train_clone, w), b);
 
             let predictions = self.sigmoid_mat(linear_predictions);
 
+            let pred_y = self.sum(predictions, self.scalar_mul(y_train_clone, -1));
+            let pred_y_clone = pred_y.clone();
+            let dw = self.scalar_div(self.dot_product(x_train_trans, pred_y), n_samples);
 
-            // let dw=self.scalar_div()
+            let db = self.scalar_div(self.element_sum_row(pred_y_clone), n_samples);
+
+            let updated_w = self.sum(w_clone, self.scalar_mul(dw, lr));
+            let updated_b = self.sum(b_clone, self.scalar_mul(db, lr));
+
+            self.set_vars(updated_w, updated_b);
         }
         // for _ in range(self.n_iters):
         //     linear_pred = np.dot(X, self.weights) + self.bias
