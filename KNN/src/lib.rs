@@ -58,7 +58,15 @@ impl KNN {
         ans *= 1000.0; // scaled 10**3 times
         return ans as i128;
     }
-    pub fn most_common(&self, distances:Vec<i128>,y_train:Vec<i128>,k:u128) -> i128 {
+
+    pub fn most_common(&self,x:Vec<i128>, x_train : Vec<Vec<i128>>, y_train:Vec<i128>,k:u128) -> i128 {
+        let mut distances : Vec<i128> = Vec::new();
+        let tmp_len = x_train.len();
+        for i in 0..tmp_len{
+            let x_clone = x.clone();
+            let x_train_clone = x_train[i].clone();
+            distances[i] = self.euclidean_distance(x_clone, x_train_clone);
+        }
         let mut tmp : Vec<(usize,i128)> = Vec::new();
         let dist_len = distances.len();
         for x in 0..dist_len{
@@ -92,11 +100,25 @@ impl KNN {
         }
         start
     }
+
+    pub fn predict(&self, x: Vec<Vec<i128>>, x_train : Vec<Vec<i128>>, y_train:Vec<i128>,k:u128) -> Vec<i128>{
+        let mut predictions : Vec<i128> = Vec::new();
+        let tmp_len = x.len();
+        for i in 0..tmp_len{
+            let x_clone = x[i].clone();
+            let x_train_clone = x_train.clone();
+            let y_train_clone = y_train.clone();
+            predictions[i] = self.most_common(x_clone, x_train_clone, y_train_clone, k);
+        }
+        predictions
+    }
 }
 
 #[external]
 impl KNN {
-    pub fn train_predict(&mut self) {}
+    pub fn train_predict(&mut self, x: Vec<Vec<i128>>, x_train : Vec<Vec<i128>>, y_train:Vec<i128>,k:u128) {
+        self.predict(x, x_train, y_train, k);
+    }
     pub fn set_k(&mut self, val: U256) {
         self.k.set(val);
     }
