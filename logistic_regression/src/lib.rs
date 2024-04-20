@@ -31,7 +31,7 @@ static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
 use fast_math::exp;
 /// Import items from the SDK. The prelude contains common traits and macros.
-use stylus_sdk::{alloy_primitives::U256, prelude::*};
+use stylus_sdk::prelude::*;
 // Define some persistent storage using the Solidity ABI.
 // `Counter` will be the entrypoint.
 sol_storage! {
@@ -201,11 +201,17 @@ impl LogReg {
 }
 #[external]
 impl LogReg {
-    pub fn train(&mut self, x_train: Vec<Vec<i128>>, y_train: Vec<Vec<i128>>, iterations: u128) {
+    pub fn train(
+        &mut self,
+        x_train: Vec<Vec<i128>>,
+        y_train: Vec<Vec<i128>>,
+        iterations: u128,
+        lr: i128,
+    ) {
         // w-> n*1, b-> m*1, x_train-> m*n, y_train->m*1
         // n_samples, n_features = X.shape
         let n_samples = x_train.len() as i128;
-        let n_features = x_train[0].len();
+        let _n_features = x_train[0].len();
 
         // self.weights = np.zeros(n_features)
         // self.bias = 0
@@ -216,7 +222,7 @@ impl LogReg {
             let y_train_clone = y_train.clone();
 
             let (w, b) = self.change_type();
-            let (w_clone, b_clone) = (w.clone(), b_clone());
+            let (w_clone, b_clone) = (w.clone(), b.clone());
 
             let linear_predictions = self.sum(self.dot_product(x_train_clone, w), b);
 
