@@ -176,6 +176,14 @@ impl LogReg {
         result
     }
 
+    pub fn init_params(&mut self, m: i128, n: i128) {
+        let m = m as usize;
+        let b: Vec<Vec<i128>> = vec![vec![0; 1]; m];
+        let n = n as usize;
+        let w: Vec<Vec<i128>> = vec![vec![0; 1]; n];
+        self.set_vars(w, b);
+    }
+
     pub fn set_vars(&mut self, w: Vec<Vec<i128>>, b: Vec<Vec<i128>>) {
         //set w and all.
         let m = self.w.len();
@@ -211,8 +219,8 @@ impl LogReg {
         // w-> n*1, b-> m*1, x_train-> m*n, y_train->m*1
         // n_samples, n_features = X.shape
         let n_samples = x_train.len() as i128;
-        let _n_features = x_train[0].len();
-
+        let n_features = x_train[0].len() as i128;
+        self.init_params(n_samples, n_features);
         // self.weights = np.zeros(n_features)
         // self.bias = 0
         for _ in 0..iterations {
