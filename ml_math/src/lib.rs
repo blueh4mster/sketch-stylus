@@ -39,15 +39,15 @@ sol_storage! {
     pub struct MlMath{
     }
 }
-
-#[external]
-impl MlMath {
-    
+impl MlMath{
     pub fn sigmoid(z: i128) -> i128 {
         let mut ans = exp(z as f32) / (1.0 + exp(z as f32));
         ans *= 1000.0;
         return ans as i128;
     }
+}
+#[external]
+impl MlMath {
 
     pub fn relu_derive(m: Vec<Vec<i128>>) -> Vec<Vec<i128>> {
         let mut result: Vec<Vec<i128>> = Vec::new();
