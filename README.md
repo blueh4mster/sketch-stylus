@@ -20,9 +20,9 @@ This library implements the following:
 
 ### KNN
 
-> Uncompressed size - 24.4 KB
+> Uncompressed size - 46.1 KB
 >
-> Compressed size - 8.9 KB
+> Compressed size - 15.1 KB
 >
 > Deployment gas - 6881292
 >
