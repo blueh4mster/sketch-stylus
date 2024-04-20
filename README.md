@@ -23,10 +23,18 @@ This library implements the following:
 >
 > Compressed size - 8.9 KB
 >
-> Deployment gas -
+> Deployment gas - 6881292
 >
 >Exported ABI - 
->![alt text](img3.png) 
+>``` bash
+>interface IKNN {
+>    function trainPredict() external;
+>
+>    function setK(uint256 val) external;
+>
+>    function getK() external view returns (uint256);
+>}
+>```
 
 ### Logistic Regression
 
@@ -44,10 +52,34 @@ This library implements the following:
 >
 > Compressed size - 13.1 KB
 >
-> Deployment gas -
+> Deployment gas - 10062745
 >
 >Exported ABI - 
->![alt text](img2.png)
+>``` bash
+>interface IMlMath {
+>    function reluDerive(int128[][] memory m) external pure returns (int128[][] memory);
+>
+>    function elementSumRow(int128[][] memory z) external pure returns (int128[][] memory);
+>
+>    function scalarDiv(int128[][] memory mat, int128 scalar) external pure returns (int128[][] memory);
+>
+>    function elementwiseMul(int128[][] memory m1, int128[][] memory m2) external pure returns (int128[][] memory);
+>
+>    function transpose(int128[][] memory ori) external pure returns (int128[][] memory);
+>
+>    function softmax(int128[][] memory z) external pure returns (int128[][] memory);
+>
+>    function relu(int128[][] memory z) external pure returns (int128[][] memory);
+>
+>    function dotProduct(int128[][] memory m1, int128[][] memory m2) external pure returns (int128[][] memory);
+>
+>    function sum(int128[][] memory m1, int128[][] memory m2) external pure returns (int128[][] memory);
+>
+>    function oneHot(int128[][] memory y) external pure returns (int128[][] memory);
+>
+>    function scalarMul(int128[][] memory mat, int128 scalar) external pure returns (int128[][] memory);
+>}
+> ```
 
 ### Digit Recognizer
 
@@ -55,7 +87,11 @@ This library implements the following:
 >
 > Compressed size - 16.5 KB
 >
-> Deployment gas -
+> Deployment gas - 12623680
 >
 >Exported ABI - 
->![alt1](images/imp1.png)
+>``` bash
+>interface ITraining {
+>    function trainPredict(int128[][] memory x_train, int128[][] memory y_train) external returns (bool);
+>}
+>```
