@@ -29,7 +29,6 @@ extern crate alloc;
 #[global_allocator]
 static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
-use sqrt_rs::babylonian_sqrt;
 use std::collections::HashMap;
 /// Import items from the SDK. The prelude contains common traits and macros.
 use stylus_sdk::{alloy_primitives::U256, prelude::*};
@@ -48,15 +47,60 @@ impl KNN {
     pub fn euclidean_distance(&self, x1: Vec<i128>, x2: Vec<i128>) -> i128 {
         // distance = np.sqrt(np.sum((x1-x2)**2))
         assert_eq!(x1.len(), x2.len(), "length of arrays not same");
-        let mut sum = 0.0;
+        let mut sum = 0;
         for i in 0..x1.len() {
-            let val = (x1[i] - x2[i]) as f32;
+            let val = x1[i] - x2[i];
             sum += val * val;
         }
         //scale it in here
-        let mut ans = babylonian_sqrt(sum);
-        ans *= 1000.0; // scaled 10**3 times
+        let mut ans = self.sqrt(sum as u128);
+        ans *= 1000; // scaled 10**3 times
         return ans as i128;
+    }
+
+    pub fn sqrt(&self,x: u128) -> u128 {
+        if x == 0 {
+            return x;
+        }
+    
+        let mut x_aux = x;
+        let mut result = 1 as u128;
+    
+        if x_aux >= 0x100000000 {
+            x_aux >>= 32;
+            result <<= 16;
+        }
+        if x_aux >= 0x10000 {
+            x_aux >>= 16;
+            result <<= 8;
+        }
+        if x_aux >= 0x100 {
+            x_aux >>= 8;
+            result <<= 4;
+        }
+        if x_aux >= 0x10 {
+            x_aux >>= 4;
+            result <<= 2;
+        }
+        if x_aux >= 0x4 {
+            result <<= 1;
+        }
+        result = (result + x / result) >> 1;
+        result = (result + x / result) >> 1;
+        result = (result + x / result) >> 1;
+        result = (result + x / result) >> 1;
+        result = (result + x / result) >> 1;
+        result = (result + x / result) >> 1;
+        result = (result + x / result) >> 1; 
+        let rounded_result = x / result;
+        let mut final_res;
+    
+        if result >= rounded_result {
+            final_res = rounded_result;
+        } else {
+            final_res = result;
+        }
+        final_res
     }
 
     pub fn most_common(&self,x:Vec<i128>, x_train : Vec<Vec<i128>>, y_train:Vec<i128>,k:u128) -> i128 {

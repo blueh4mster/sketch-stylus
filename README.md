@@ -1,4 +1,5 @@
 # SKETCH-STYLUS
+
 ![alt text](public/Untitled-5_page-0001.jpg)
 
 ## Introduction
@@ -20,22 +21,23 @@ This library implements the following:
 
 ### KNN
 
-> Uncompressed size - 46.1 KB
+> Uncompressed size - 47.7 KB
 >
-> Compressed size - 15.1 KB
+> Compressed size - 15.5 KB
 >
 > Deployment gas - 6881292
 >
->Exported ABI - 
->``` bash
->interface IKNN {
+> Exported ABI -
+>
+> ```bash
+> interface IKNN {
 >    function trainPredict() external;
 >
 >    function setK(uint256 val) external;
 >
 >    function getK() external view returns (uint256);
->}
->```
+> }
+> ```
 
 ### Logistic Regression
 
@@ -44,8 +46,6 @@ This library implements the following:
 > Compressed size - 17.5 KB
 >
 > Deployment gas -
->
->
 
 ### ML-math
 
@@ -55,9 +55,10 @@ This library implements the following:
 >
 > Deployment gas - 10062745
 >
->Exported ABI - 
->``` bash
->interface IMlMath {
+> Exported ABI -
+>
+> ```bash
+> interface IMlMath {
 >    function reluDerive(int128[][] memory m) external pure returns (int128[][] memory);
 >
 >    function elementSumRow(int128[][] memory z) external pure returns (int128[][] memory);
@@ -79,7 +80,7 @@ This library implements the following:
 >    function oneHot(int128[][] memory y) external pure returns (int128[][] memory);
 >
 >    function scalarMul(int128[][] memory mat, int128 scalar) external pure returns (int128[][] memory);
->}
+> }
 > ```
 
 ### Digit Recognizer
@@ -90,9 +91,10 @@ This library implements the following:
 >
 > Deployment gas - 12623680
 >
->Exported ABI - 
->``` bash
->interface ITraining {
+> Exported ABI -
+>
+> ```bash
+> interface ITraining {
 >    function trainPredict(int128[][] memory x_train, int128[][] memory y_train) external returns (bool);
->}
->```
+> }
+> ```
