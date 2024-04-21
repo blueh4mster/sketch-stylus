@@ -15,7 +15,6 @@ use eyre::eyre;
 use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 use std::sync::Arc;
-use stylus_hello_world::MlMath;
 
 /// Your private key file path.
 const PRIV_KEY_PATH: &str = "./../scripts/.env";

@@ -52,14 +52,14 @@ async fn main() -> eyre::Result<()> {
         wallet.clone().with_chain_id(chain_id),
     ));
 
-    let KNN = KNN::new(address, client);
+    let knn = KNN::new(address, client);
 
     //data
-    let y_train;
-    let x_train;
-    let x;
+    let y_train = vec![6; 7];
+    let x_train = vec![vec![3; 4]; 7];
+    let x = vec![vec![7; 2]; 5];
     let k = 3;
-    let _ = KNN
+    let _ = knn
         .train_predict(x, x_train, y_train, k)
         .send()
         .await?
