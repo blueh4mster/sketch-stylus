@@ -15,7 +15,6 @@ use eyre::eyre;
 use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 use std::sync::Arc;
-use stylus_hello_world::LogReg;
 
 /// Your private key file path.
 const PRIV_KEY_PATH: &str = "./../scripts/.env";
@@ -51,14 +50,14 @@ async fn main() -> eyre::Result<()> {
         wallet.clone().with_chain_id(chain_id),
     ));
 
-    let LogReg = LogReg::new(address, client);
+    let log_reg = LogReg::new(address, client);
 
     //data
-    let y_train;
-    let x_train;
+    let y_train = vec![vec![1; 10]; 6];
+    let x_train = vec![vec![7; 10]; 6];
     let iterations = 100;
     let lr = 2;
-    let _ = LogReg
+    let _ = log_reg
         .train(x_train, y_train, iterations, lr)
         .send()
         .await?
