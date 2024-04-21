@@ -15,15 +15,16 @@ use eyre::eyre;
 use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 use std::sync::Arc;
+use stylus_hello_world::LogReg;
 
 /// Your private key file path.
-const PRIV_KEY_PATH: &str = "PRIV_KEY_PATH";
+const PRIV_KEY_PATH: &str = "./../scripts/.env";
 
 /// Stylus RPC endpoint url.
-const RPC_URL: &str = "RPC_URL";
+const RPC_URL: &str = "https://stylus-testnet.arbitrum.io/rpc";
 
 /// Deployed pragram address.
-const STYLUS_PROGRAM_ADDRESS: &str = "STYLUS_PROGRAM_ADDRESS";
+const STYLUS_PROGRAM_ADDRESS: &str = "0xfc7e317841fd75DC965EFab1F6D58447cd627088";
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
@@ -33,11 +34,9 @@ async fn main() -> eyre::Result<()> {
     let program_address = std::env::var(STYLUS_PROGRAM_ADDRESS)
         .map_err(|_| eyre!("No {} env var set", STYLUS_PROGRAM_ADDRESS))?;
     abigen!(
-        Counter,
+        LogReg,
         r#"[
-            function number() external view returns (uint256)
-            function setNumber(uint256 number) external
-            function increment() external
+            function train(int128[][] memory x_train, int128[][] memory y_train, uint128 iterations, int128 lr) external returns (bool)
         ]"#
     );
 
@@ -52,15 +51,19 @@ async fn main() -> eyre::Result<()> {
         wallet.clone().with_chain_id(chain_id),
     ));
 
-    let counter = Counter::new(address, client);
-    let num = counter.number().call().await;
-    println!("Counter number value = {:?}", num);
+    let LogReg = LogReg::new(address, client);
 
-    let _ = counter.increment().send().await?.await?;
+    //data
+    let y_train;
+    let x_train;
+    let iterations = 100;
+    let lr = 2;
+    let _ = LogReg
+        .train(x_train, y_train, iterations, lr)
+        .send()
+        .await?
+        .await?;
     println!("Successfully incremented counter via a tx");
-
-    let num = counter.number().call().await;
-    println!("New counter number value = {:?}", num);
     Ok(())
 }
 
