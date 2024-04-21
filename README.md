@@ -23,8 +23,8 @@ This library implements the following:
 
 The k-nearest neighbors (KNN) algorithm is a non-parametric, supervised learning classifier, which uses proximity to make classifications or predictions about the grouping of an individual data point.
 
-- Uncompressed size - 47.7 KB
-- Compressed size - 15.5 KB
+- Uncompressed size - 48.4 KB
+- Compressed size - 15.6 KB
 - Deployment gas - 6881292
 - Exported ABI
 

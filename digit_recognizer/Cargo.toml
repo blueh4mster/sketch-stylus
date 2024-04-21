@@ -28,7 +28,7 @@ export-abi = ["stylus-sdk/export-abi"]
 debug = ["stylus-sdk/debug"]
 
 [[bin]]
-name = "digit_recognizer"
+name = "stylus-hello-world"
 path = "src/lib.rs"
 
 [lib]

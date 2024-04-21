@@ -35,8 +35,6 @@ use stylus_sdk::{alloy_primitives::U256, prelude::*};
 // Define some persistent storage using the Solidity ABI.
 // `Counter` will be the entrypoint.
 
-mod functions;
-use functions::Functions;
 sol_storage! {
     #[entrypoint]
     pub struct KNN{
@@ -112,7 +110,7 @@ impl KNN {
         for i in 0..tmp_len {
             let x_clone = x.clone();
             let x_train_clone = x_train[i].clone();
-            distances[i] = Functions::euclidean_distance(x_clone, x_train_clone);
+            distances[i] = self.euclidean_distance(x_clone, x_train_clone);
         }
         let mut tmp: Vec<(usize, i128)> = Vec::new();
         let dist_len = distances.len();
