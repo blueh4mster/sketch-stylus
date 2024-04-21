@@ -15,15 +15,16 @@ use eyre::eyre;
 use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 use std::sync::Arc;
+use stylus_hello_world::MlMath;
 
 /// Your private key file path.
-const PRIV_KEY_PATH: &str = "PRIV_KEY_PATH";
+const PRIV_KEY_PATH: &str = "./../scripts/.env";
 
 /// Stylus RPC endpoint url.
-const RPC_URL: &str = "RPC_URL";
+const RPC_URL: &str = "https://stylus-testnet.arbitrum.io/rpc";
 
 /// Deployed pragram address.
-const STYLUS_PROGRAM_ADDRESS: &str = "STYLUS_PROGRAM_ADDRESS";
+const STYLUS_PROGRAM_ADDRESS: &str = "0xfc7e317841fd75DC965EFab1F6D58447cd627088";
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
@@ -33,11 +34,19 @@ async fn main() -> eyre::Result<()> {
     let program_address = std::env::var(STYLUS_PROGRAM_ADDRESS)
         .map_err(|_| eyre!("No {} env var set", STYLUS_PROGRAM_ADDRESS))?;
     abigen!(
-        Counter,
+        MlMath,
         r#"[
-            function number() external view returns (uint256)
-            function setNumber(uint256 number) external
-            function increment() external
+            function reluDerive(int128[][] memory m) external pure returns (int128[][] memory)
+            function elementSumRow(int128[][] memory z) external pure returns (int128[][] memory)
+            function scalarDiv(int128[][] memory mat, int128 scalar) external pure returns (int128[][] memory)
+            function elementwiseMul(int128[][] memory m1, int128[][] memory m2) external pure returns (int128[][] memory)
+            function transpose(int128[][] memory ori) external pure returns (int128[][] memory)
+            function softmax(int128[][] memory z) external pure returns (int128[][] memory)
+            function relu(int128[][] memory z) external pure returns (int128[][] memory)
+            function dotProduct(int128[][] memory m1, int128[][] memory m2) external pure returns (int128[][] memory)
+            function sum(int128[][] memory m1, int128[][] memory m2) external pure returns (int128[][] memory)
+            function oneHot(int128[][] memory y) external pure returns (int128[][] memory)
+            function scalarMul(int128[][] memory mat, int128 scalar) external pure returns (int128[][] memory)
         ]"#
     );
 
@@ -52,15 +61,13 @@ async fn main() -> eyre::Result<()> {
         wallet.clone().with_chain_id(chain_id),
     ));
 
-    let counter = Counter::new(address, client);
-    let num = counter.number().call().await;
-    println!("Counter number value = {:?}", num);
+    let ml_math = MlMath::new(address, client);
 
-    let _ = counter.increment().send().await?.await?;
+    //data
+    let x = vec![vec![21; 11]; 10];
+    let scalar: i128 = 2;
+    let _ = ml_math.scalar_mul(x, scalar).send().await?.await?;
     println!("Successfully incremented counter via a tx");
-
-    let num = counter.number().call().await;
-    println!("New counter number value = {:?}", num);
     Ok(())
 }
 
