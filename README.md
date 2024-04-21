@@ -1,6 +1,7 @@
 # SKETCH-STYLUS
 
 <img src="public/Untitled-5_page-0001.jpg" alt="logo" width="448" height="336" style="display:block;margin:0 auto">
+
 ## Introduction
 
 This is a hand written and optimized machine learning library written in Rust using Arbitrum's Stylus [SDK](https://docs.arbitrum.io/stylus/stylus-quickstart).
