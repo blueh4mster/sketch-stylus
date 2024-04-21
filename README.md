@@ -41,8 +41,8 @@ interface IKNN {
 
 Logistic regression estimates the probability of an event occurring, such as voted or didn’t vote, based on a given data set of independent variables. This type of statistical model (also known as logit model) is often used for classification and predictive analytics.
 
-- Uncompressed size - 55.8 KB
-- Compressed size - 17.5 KB
+- Uncompressed size - 71.1 KB
+- Compressed size - 24.0 KB
 - Deployment gas -
 - Exported ABI
 
@@ -89,7 +89,7 @@ interface IMlMath {
 
 ### Digit Recognizer
 
-Digit Recognition is a computer vision technique to predict the correct digits from pixel values of images. We have employed MNIST dataset for training. 
+Digit Recognition is a computer vision technique to predict the correct digits from pixel values of images. We have employed MNIST dataset for training.
 
 - Uncompressed size - 52 KB
 - Compressed size - 16.5 KB
@@ -101,4 +101,3 @@ interface ITraining {
    function trainPredict(int128[][] memory x_train, int128[][] memory y_train) external returns (bool);
 }
 ```
-![alt text](public/Untitled-5_page-0001.jpg)
