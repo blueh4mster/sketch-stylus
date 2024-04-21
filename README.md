@@ -89,6 +89,8 @@ interface IMlMath {
 
 ### Digit Recognizer
 
+Digit Recognition is a computer vision technique to predict the correct digits from pixel values of images. We have employed MNIST dataset for training. 
+
 - Uncompressed size - 52 KB
 - Compressed size - 16.5 KB
 - Deployment gas - 12623680
@@ -99,3 +101,4 @@ interface ITraining {
    function trainPredict(int128[][] memory x_train, int128[][] memory y_train) external returns (bool);
 }
 ```
+![alt text](public/Untitled-5_page-0001.jpg)
